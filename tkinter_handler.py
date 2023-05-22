@@ -15,7 +15,7 @@ class tk_handler:
         main.destroy()
 
         return tk_m.askokcancel(
-            title="Quit",
-            message="Are you sure that you would like to close this application?",
+            title="Deactivate EEMS",
+            message="Are you sure that you would like to deactive the EEMS and all its protocols? This is an irrevocable process.",
             icon=tk_m.WARNING,
         )
