@@ -3,13 +3,10 @@
 # Import necessary libraries
 import pygame as py
 import tkinter_handler
-import simple_rendering_functions
+import game_engine_classes
 
 # Start a tkinter_handler instance
 tk_handler = tkinter_handler.tk_handler()
-
-# Start a simple_rendering_functions instance
-simple_render_functions = simple_rendering_functions.simple_functions()
 
 # Initialise a Clock instance to keep track of time
 clock = py.time.Clock()
@@ -31,18 +28,22 @@ class scene_controller:
         # Change the title of the PyGame window
         py.display.set_caption("EEMS")
 
+        # Load in the EEMS logo and display it as the window icon
+        eems_logo_icon = py.image.load("Assets/Original_Art/EEMS-Logo-Small.png")
+        py.display.set_icon(eems_logo_icon)
+
     def main_menu_scene(self):
         self.frame.fill("#3D5A80")
 
         main_menu_scene_running = True
 
-        simple_render_functions.draw_text(frame=self.frame, text="E•E•M•S", size=60, x=250, y=50)
-        simple_render_functions.draw_text(frame=self.frame, text="Educational Economic Market - Simulated", size=25, x=250, y=100,)
+        game_engine_classes.draw_text(frame=self.frame, text="E•E•M•S", size=60, x=250, y=50)
+        game_engine_classes.draw_text(frame=self.frame, text="Educational Economic Market - Simulated", size=25, x=250, y=100,)
 
-        play_game_button = simple_rendering_functions.button(frame=self.frame, text="Play Game", size=35, x=250, y=180)
-        how_it_works_button = simple_rendering_functions.button(frame=self.frame, text="How It Works", size=35, x=250, y=260)
-        about_us_button = simple_rendering_functions.button(frame=self.frame, text="About Us", size=35, x=250, y=340)
-        donate_button = simple_rendering_functions.button(frame=self.frame, text="Donate", size=35, x=250, y=420)
+        play_game_button = game_engine_classes.button(frame=self.frame, text="Play Game", size=28, x=250, y=180)
+        how_it_works_button = game_engine_classes.button(frame=self.frame, text="How It Works", size=28, x=250, y=260)
+        about_us_button = game_engine_classes.button(frame=self.frame, text="About Us", size=28, x=250, y=340)
+        donate_button = game_engine_classes.button(frame=self.frame, text="Donate", size=28, x=250, y=420)
 
         while main_menu_scene_running:
              # Check for inputs from the player

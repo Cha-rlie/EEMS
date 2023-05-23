@@ -3,27 +3,19 @@
 # Import necessary classes
 import pygame as py
 
+def draw_text(frame, text, size, x, y, colour="#EE6C4D", font="Assets/Font/aesymatt.ttf"):
+    font_obj = py.font.Font(font, size)
 
-class simple_functions:
-    def __init__(self):
-        pass
+    text_surface = font_obj.render(text, False, colour)
 
-    def draw_text(self, frame, text, size, x, y, colour="#EE6C4D", font="Assets/Font/aesymatt.ttf"):
-        font_obj = py.font.Font(font, size)
+    text_rect = text_surface.get_rect()
 
-        text_surface = font_obj.render(text, False, colour)
+    text_rect.center = (x, y)
 
-        text_rect = text_surface.get_rect()
-
-        text_rect.center = (x, y)
-
-        frame.blit(text_surface, text_rect)
+    frame.blit(text_surface, text_rect)
 
 
 class button:
-    """def __init__(self):
-        pass"""
-
     def __init__(
         self,
         frame,
