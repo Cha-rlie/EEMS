@@ -1,4 +1,4 @@
-# los notes: first, once all the shenanigans (character that can move) are done, make all the room and the links between the rooms
+# Notes: first, once all the shenanigans (character that can move) are done, make all the room and the links between the rooms
 
 # EEMS (Educational Economic Market - Simulated)
 
