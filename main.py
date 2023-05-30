@@ -16,7 +16,7 @@ scene_controller = scene_controller.scene_controller()
 
 while scene_controller.game_running:
 
-    scene_controller.main_menu_scene()
+    scene_controller.change_scene()
 
 # End the program
 py.quit()

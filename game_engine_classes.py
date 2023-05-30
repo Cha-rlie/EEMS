@@ -23,6 +23,7 @@ class button:
         size,
         x,
         y,
+        on_click="Button Clicked!",
         primary_colour="#EE6C4D",
         secondary_colour="#3D5A80",
         font="Assets/Font/aesymatt.ttf",
@@ -31,6 +32,7 @@ class button:
         self.text_colour = primary_colour
         self.background_colour = secondary_colour
         self.font_obj = py.font.Font(font, size)
+        self.on_click = on_click
         self.alter_button(frame, text)
 
     def alter_button(self, frame, text):
@@ -59,4 +61,7 @@ class button:
         if event.type == py.MOUSEBUTTONDOWN:
             if py.mouse.get_pressed()[0]:
                 if self.button_click_rect.collidepoint(mouse_x, mouse_y):
-                    print("Button clicked!")
+                    print(f"Button clicked: {self.on_click}")
+                    print(f"what is being returned {self.on_click}")
+                    return self.on_click
+        return None
