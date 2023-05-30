@@ -63,6 +63,7 @@ class scene_controller:
                 self.current_scene_running = True"""
 
     def main_menu_scene(self):
+        # Fill the window with colour and content
         self.frame.fill("#3D5A80")
 
         self.current_scene_running = True
@@ -83,16 +84,21 @@ class scene_controller:
                         self.current_scene_running = False
                         self.game_running = False
                 else:
-                    self.current_scene = play_game_button.click_button(event)
-                    self.current_scene = how_it_works_button.click_button(event)
-                    self.current_scene = about_us_button.click_button(event)
-                    self.current_scene = credits_button.click_button(event)
-                    print(f"Before change {self.current_scene}")
+                    if play_game_button.click_button(event) != None:
+                        self.current_scene = play_game_button.click_button(event)
+                    elif how_it_works_button.click_button(event) != None:
+                        self.current_scene = how_it_works_button.click_button(event)
+                    elif about_us_button.click_button(event) != None:
+                        self.current_scene = about_us_button.click_button(event)
+                    else:
+                        self.current_scene = credits_button.click_button(event)
+                    
                     if self.current_scene == None:
                         self.current_scene = "Main_Menu"
                     else:
                         self.current_scene_running = False
                         self.change_scene(scene_called_from="Main_Menu")
+                    print(f"Before change {self.current_scene}")
 
                 # Ensures that all devices can run the program at a basic speed of 60fps
                 clock.tick(60)
@@ -103,21 +109,85 @@ class scene_controller:
             # Change the scene if necessary
             #self.current_scene_running = self.change_scene(scene_called_from="Main Menu")
     
-    def play_scene(self):
-        self.frame.fill("#3D5A80")
-        print("play_game_scene")
-
-    def how_it_works_scene(self):
-        self.frame.fill("#3D5A80")
-        print("how_it_works_scene")
-    
-    def about_us_scene(self):
-        self.frame.fill("#3D5A80")
-        print("about_us_scene")
-    
-    def credits_scene(self):
+    def play_game_scene(self):
         self.current_scene_running = True
         self.frame.fill("#3D5A80")
+
         while self.current_scene_running:
-            pass
-        print("credits_scene")
+            # Check for imputs from the player
+            for event in py.event.get():
+                if event.type == py.QUIT:
+                    if tk_handler.check_closing():
+                        self.current_scene_running = False
+                        self.game_running = False
+
+            # Ensures that all devices can run the program at a basic speed of 60fps
+            clock.tick(60)
+
+            # Update the window
+            py.display.flip()
+
+    def how_it_works_scene(self):
+        self.current_scene_running = True
+        self.frame.fill("#3D5A80")
+
+        while self.current_scene_running:
+            # Check for imputs from the player
+            for event in py.event.get():
+                if event.type == py.QUIT:
+                    if tk_handler.check_closing():
+                        self.current_scene_running = False
+                        self.game_running = False
+
+            # Ensures that all devices can run the program at a basic speed of 60fps
+            clock.tick(60)
+
+            # Update the window
+            py.display.flip()
+    
+    def about_us_scene(self):
+        self.current_scene_running = True
+        self.frame.fill("#3D5A80")
+
+        while self.current_scene_running:
+            # Check for imputs from the player
+            for event in py.event.get():
+                if event.type == py.QUIT:
+                    if tk_handler.check_closing():
+                        self.current_scene_running = False
+                        self.game_running = False
+
+            # Ensures that all devices can run the program at a basic speed of 60fps
+            clock.tick(60)
+
+            # Update the window
+            py.display.flip()
+    
+    def credits_scene(self):
+        # Fill the window with colour and content
+        self.current_scene_running = True
+        self.frame.fill("#3D5A80")
+
+        game_engine_classes.draw_text(frame=self.frame, text="Credits", size=50, x=250, y=50)
+        game_engine_classes.draw_text(frame=self.frame, text="E•E•M•S", size=10, x=250, y=80)
+        game_engine_classes.draw_text(frame=self.frame, text="QASMT", size=28, x=250, y=175)
+        game_engine_classes.draw_text(frame=self.frame, text="Our Supervising Mentors - Mr Isaac and Mr Vasco", size=28, x=250, y=225)
+        game_engine_classes.draw_text(frame=self.frame, text="Research Interview -  Mr Altoft", size=28, x=250, y=275)
+        game_engine_classes.draw_text(frame=self.frame, text="Feedback Interview - Mr Fredericksen", size=28, x=250, y=325)
+        game_engine_classes.draw_text(frame=self.frame, text="Image to Pixel Art - Pixelied.com", size=28, x=250, y=375)
+        game_engine_classes.draw_text(frame=self.frame, text="Pixel Art Font - AE Systematic TT (BRK)", size=28, x=250, y=425)
+        game_engine_classes.draw_text(frame=self.frame, text="Icons - Iconscout.com", size=28, x=250, y=475)
+
+        while self.current_scene_running:
+            # Check for imputs from the player
+            for event in py.event.get():
+                if event.type == py.QUIT:
+                    if tk_handler.check_closing():
+                        self.current_scene_running = False
+                        self.game_running = False
+
+            # Ensures that all devices can run the program at a basic speed of 60fps
+            clock.tick(60)
+
+            # Update the window
+            py.display.flip()
