@@ -15,7 +15,7 @@ def draw_text(frame, text, size, x, y, colour="#EE6C4D", font="Assets/Font/aesym
     frame.blit(text_surface, text_rect)
 
 
-class button:
+class text_button:
     def __init__(
         self,
         frame,
@@ -26,7 +26,7 @@ class button:
         on_click="Button Clicked!",
         primary_colour="#EE6C4D",
         secondary_colour="#3D5A80",
-        font="Assets/Font/aesymatt.ttf",
+        font="Assets/Font/aesymatt.ttf"
     ):
         self.x, self.y = (x, y)
         self.text_colour = primary_colour
@@ -61,7 +61,52 @@ class button:
         if event.type == py.MOUSEBUTTONDOWN:
             if py.mouse.get_pressed()[0]:
                 if self.button_click_rect.collidepoint(mouse_x, mouse_y):
-                    print(f"Button clicked: {self.on_click}")
-                    print(f"what is being returned {self.on_click}")
+                    return self.on_click
+        return None
+
+class image_button():
+    def __init__(
+        self,
+        frame,
+        image_path,
+        size,
+        x,
+        y,
+        on_click="Button Clicked!",
+    ):
+        self.x, self.y = (x, y)
+        self.on_click = on_click
+        self.size = size
+        self.alter_button(frame, image_path)
+    
+    def alter_button(self, frame, image_path):
+        # Load the image in
+        image = py.image.load(image_path)#.convert_alpha()
+
+        # Remove the background of the image
+        # image.set_colorkey((0,0,0))
+
+        # Resize the image
+        resized_image = py.transform.scale(image, self.size)
+
+        # Put the image onto a surface
+        # self.button_surface = py.Surface(resized_image.get_size())
+
+        # Attach the image onto the button surface
+        #frame.blit(resized_image, (0,0))
+
+        # Create an invisible rectangle where clicks will be measured
+        self.button_click_rect = py.Surface(resized_image.get_size()).get_rect()
+        self.button_click_rect.center = (self.x, self.y)
+
+        # Put this all onto the frame for the user to interact with
+        frame.blit(resized_image, self.button_click_rect)
+
+    def click_button(self, event):
+        mouse_x, mouse_y = py.mouse.get_pos()
+        if event.type == py.MOUSEBUTTONDOWN:
+            if py.mouse.get_pressed()[0]:
+                if self.button_click_rect.collidepoint(mouse_x, mouse_y):
+                    print("button clicked")
                     return self.on_click
         return None

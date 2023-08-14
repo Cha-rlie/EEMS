@@ -99,7 +99,7 @@ class Government:
         self.total_money = total_circulating_money * economic_percentage
         self.new_total_money = self.total_money
         self.targetted_econmoic_percentage = economic_percentage
-        self.printing_rate = 0.5
+        self.printing_rate = 0
         self.corruption = 0
         self.government_spending_rate = 0.1
         self.tax_rate = 0.3
@@ -112,7 +112,7 @@ class Government:
         self.new_total_money += round(consumers_class.total_money * self.tax_rate)
 
     def print_money(self):
-        self.new_total_money += self.total_money * (
+        self.new_total_money += self.total_money + abs(self.total_money) * (
             self.printing_rate + self.corruption
         )
 
@@ -177,14 +177,14 @@ class Foreign_Sector:
         self.balance_of_trade = 0
     
     def import_payments(self, consumers_class):
-        consumers_class.total_money -= (self.general_trading_attitude + consumers_class.trading_attitude) * consumers_class.total_money
-        self.balance_of_trade += (self.general_trading_attitude + consumers_class.trading_attitude) * consumers_class.total_money
-        print(f"import payments: {(self.general_trading_attitude + consumers_class.trading_attitude) * consumers_class.total_money}")
+        consumers_class.new_total_money -= ((self.general_trading_attitude + consumers_class.trading_attitude) / 2) * consumers_class.total_money
+        self.balance_of_trade += ((self.general_trading_attitude + consumers_class.trading_attitude) / 2) * consumers_class.total_money
+        print(f"import payments: {((self.general_trading_attitude + consumers_class.trading_attitude) / 2) * consumers_class.total_money}")
         
     def export_payments(self, producers_class):
-        producers_class.total_money += (self.general_trading_attitude + producers_class.trading_attitude) * producers_class.total_money
-        self.balance_of_trade -= (self.general_trading_attitude + producers_class.trading_attitude) * producers_class.total_money
-        print(f"export_payements: -${(self.general_trading_attitude + producers_class.trading_attitude) * producers_class.total_money}")
+        producers_class.new_total_money += ((self.general_trading_attitude + producers_class.trading_attitude) / 2) * producers_class.total_money
+        self.balance_of_trade -= ((self.general_trading_attitude + producers_class.trading_attitude) / 2) * producers_class.total_money
+        print(f"export_payements: -${((self.general_trading_attitude + producers_class.trading_attitude) / 2) * producers_class.total_money}")
     
     def update_values(self, consumers_class, producers_class):
         # If the foreign sector is exporting more to this economy than the imports it receives from the country, it will increase the amount of imports and decrease the amount of exports
@@ -195,6 +195,7 @@ class Foreign_Sector:
         elif self.balance_of_trade > 0:
             consumers_class.trading_attitude -= 0.05
             producers_class.trading_attitude += 0.1        
+
 
 class Simulation:
     def __init__(self):
@@ -267,4 +268,4 @@ class Simulation:
 
 
 circular_flow_of_income_simulation = Simulation()
-circular_flow_of_income_simulation.run_multiple_rounds(100)
+circular_flow_of_income_simulation.run_multiple_rounds(50)
