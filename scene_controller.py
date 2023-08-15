@@ -15,6 +15,9 @@ clock = py.time.Clock()
 class scene_controller:
     def __init__(self):
 
+        # Settings Variables
+        self.character_colour = "Orange_Pixelated"
+
         # Variable that main.py referneces to know when to stop the game
         self.game_running = True
 
@@ -25,7 +28,7 @@ class scene_controller:
         self.current_scene_running = True
 
         # Initialise the dimensions of the game window (pixels)
-        (x, y) = (500, 500)
+        (x, y) = (750, 750)
 
         # Create a PyGame window
         self.frame = py.display.set_mode([x, y])
@@ -41,13 +44,13 @@ class scene_controller:
         self.change_scene(just_update=True)
     
     def change_scene(self, scene_called_from="", just_update=False):
-        print("change_scene ran")
-        print(f"current scene at time of change: {self.current_scene}")
+        """print("change_scene ran")
+        print(f"current scene at time of change: {self.current_scene}")"""
         if self.current_scene != scene_called_from:
             if self.current_scene == "Main_Menu":
                 self.main_menu_scene()
-            elif self.current_scene == "Play_Game":
-                self.play_game_scene()
+            elif self.current_scene == "Control_Room":
+                self.control_room()
             elif self.current_scene == "Settings":
                 self.settings()
             elif self.current_scene == "About_Us":
@@ -68,13 +71,13 @@ class scene_controller:
 
         self.current_scene_running = True
 
-        game_engine_classes.draw_text(frame=self.frame, text="E•E•M•S", size=60, x=250, y=50)
-        game_engine_classes.draw_text(frame=self.frame, text="Educational Economic Market - Simulated", size=25, x=250, y=100,)
+        game_engine_classes.draw_text(frame=self.frame, text="E•E•M•S", size=90, x=375, y=75)
+        game_engine_classes.draw_text(frame=self.frame, text="Educational Economic Market - Simulated", size=38, x=375, y=150)
 
-        play_game_button = game_engine_classes.text_button(frame=self.frame, text="Play Game", size=28, x=250, y=180, on_click="Play_Game")
-        how_it_works_button = game_engine_classes.text_button(frame=self.frame, text="About Us", size=28, x=250, y=260, on_click="About_Us")
-        about_us_button = game_engine_classes.text_button(frame=self.frame, text="Settings", size=28, x=250, y=340, on_click="Settings")
-        credits_button = game_engine_classes.text_button(frame=self.frame, text="Credits", size=28, x=250, y=420, on_click="Credits")
+        play_game_button = game_engine_classes.text_button(frame=self.frame, text="Play Game", size=42, x=375, y=270, on_click="Control_Room")
+        how_it_works_button = game_engine_classes.text_button(frame=self.frame, text="About Us", size=42, x=375, y=390, on_click="About_Us")
+        about_us_button = game_engine_classes.text_button(frame=self.frame, text="Settings", size=42, x=375, y=510, on_click="Settings")
+        credits_button = game_engine_classes.text_button(frame=self.frame, text="Credits", size=42, x=375, y=630, on_click="Credits")
 
         # settings_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Settings_Button.png", size=(50,50), x=460, y=40, on_click="Settings")
 
@@ -100,7 +103,6 @@ class scene_controller:
                     else:
                         self.current_scene_running = False
                         self.change_scene(scene_called_from="Main_Menu")
-                    print(f"Before change {self.current_scene}")
 
                 # Ensures that all devices can run the program at a basic speed of 60fps
                 clock.tick(60)
@@ -111,37 +113,53 @@ class scene_controller:
             # Change the scene if necessary
             #self.current_scene_running = self.change_scene(scene_called_from="Main Menu")
     
-    def play_game_scene(self):
+    def control_room(self):
         self.current_scene_running = True
         self.frame.fill("#3D5A80")
 
+        game_engine_classes.draw_background_image(frame=self.frame, image_path="Assets/Game_Rooms/Control_Room.png")
+
+        main_menu_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Home_Button.png", size=(55, 55), x = 37, y=37, on_click="Main_Menu")
+
+        character_path = "Assets/Character/kenney_robot-pack/PNG/" + self.character_colour
+        character = game_engine_classes.draw_character(frame=self.frame, character_folder_path=character_path, start_x=375, start_y=525)
+
         while self.current_scene_running:
-            # Check for imputs from the player
+             # Check for inputs from the player
             for event in py.event.get():
                 if event.type == py.QUIT:
                     if tk_handler.check_closing():
                         self.current_scene_running = False
                         self.game_running = False
+                else:
+                    if main_menu_button.click_button(event) != None:
+                        self.current_scene = main_menu_button.click_button(event)                  
+                    if self.current_scene == None:
+                        self.current_scene = "Control_Room"
+                    else:
+                        self.current_scene_running = False
+                        self.change_scene(scene_called_from="Control_Room")
 
-            # Ensures that all devices can run the program at a basic speed of 60fps
-            clock.tick(60)
+                # Ensures that all devices can run the program at a basic speed of 60fps
+                clock.tick(60)
 
-            # Update the window
+                # Update the window
+                py.display.flip()
             py.display.flip()
     
     def about_us_scene(self):
         self.current_scene_running = True
         self.frame.fill("#3D5A80")
 
-        game_engine_classes.draw_text(frame=self.frame, text="About Us", size=60, x=250, y=50)
-        game_engine_classes.draw_text(frame=self.frame, text="The Creators: Carlos and Charlie Tarre-Sancier", size=20, x=250, y=110)
-        game_engine_classes.draw_text(frame=self.frame, text="Hello reader, we hope this little simulation is enjoyable.", size=17, x=250, y=170)
-        game_engine_classes.draw_text(frame=self.frame, text="A lot of hard work, elbow grease (in Photoshop),", size=17, x=250, y=190)
-        game_engine_classes.draw_text(frame=self.frame, text="lost sleep (Charlie, sleep more!), skills, and dedication", size=17, x=250, y=210) 
-        game_engine_classes.draw_text(frame=self.frame, text="merged together to create this fantastic simulation!,", size=17, x=250, y=230)
-        game_engine_classes.draw_text(frame=self.frame, text="Please, nos amis, have fun!", size=17, x=250, y=250)
+        game_engine_classes.draw_text(frame=self.frame, text="About Us", size=90, x=375, y=75)
+        game_engine_classes.draw_text(frame=self.frame, text="The Creators: Carlos and Charlie Tarre-Sancier", size=30, x=375, y=165)
+        game_engine_classes.draw_text(frame=self.frame, text="Hello reader, we hope this little simulation is enjoyable.", size=26, x=375, y=255)
+        game_engine_classes.draw_text(frame=self.frame, text="A lot of hard work, elbow grease (in Photoshop),", size=26, x=375, y=285)
+        game_engine_classes.draw_text(frame=self.frame, text="lost sleep (Charlie, sleep more!), skills, and dedication", size=26, x=375, y=315) 
+        game_engine_classes.draw_text(frame=self.frame, text="merged together to create this fantastic simulation!,", size=26, x=375, y=345)
+        game_engine_classes.draw_text(frame=self.frame, text="Please, nos amis, have fun!", size=26, x=375, y=375)
 
-        back_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Back_Button.png", size=(50, 50), x = 50, y=50, on_click="Main_Menu")
+        back_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Back_Button.png", size=(75, 75), x = 75, y=75, on_click="Main_Menu")
 
         while self.current_scene_running:
              # Check for inputs from the player
@@ -158,7 +176,6 @@ class scene_controller:
                     else:
                         self.current_scene_running = False
                         self.change_scene(scene_called_from="About_Us")
-                    print(f"Before change {self.current_scene}")
 
                 # Ensures that all devices can run the program at a basic speed of 60fps
                 clock.tick(60)
@@ -171,14 +188,15 @@ class scene_controller:
         self.current_scene_running = True
         self.frame.fill("#3D5A80")
 
-        game_engine_classes.draw_text(frame=self.frame, text="Settings", size=60, x=250, y=50)
-        game_engine_classes.draw_text(frame=self.frame, text="Character Colour", size=30, x=250, y=100)
-        game_engine_classes.text_button(frame=self.frame, text="Orange", size=28, x=166, y=140)
-        game_engine_classes.text_button(frame=self.frame, text="Yellow", size=28, x=333, y=140)
-        game_engine_classes.text_button(frame=self.frame, text="Green", size=28, x=166, y=210)
-        game_engine_classes.text_button(frame=self.frame, text="Blue", size=28, x=333, y=210)
+        game_engine_classes.draw_text(frame=self.frame, text="Settings", size=90, x=375, y=75)
+        game_engine_classes.draw_text(frame=self.frame, text="Character Colour", size=45, x=375, y=150)
 
-        back_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Back_Button.png", size=(50, 50), x = 50, y=50, on_click="Main_Menu")
+        orange_colour_settings_button = game_engine_classes.text_button(frame=self.frame, text="Orange", size=42, x=249, y=240, on_click="Character Orange")
+        yellow_colour_settings_button = game_engine_classes.text_button(frame=self.frame, text="Yellow", size=42, x=500, y=240, on_click="Character Yellow")
+        green_colour_settings_button = game_engine_classes.text_button(frame=self.frame, text="Green", size=42, x=249, y=345, on_click="Character Green")
+        blue_colour_settings_button = game_engine_classes.text_button(frame=self.frame, text="Blue", size=42, x=500, y=345, on_click="Character Blue")
+
+        back_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Back_Button.png", size=(75, 75), x = 75, y=75, on_click="Main_Menu")
 
         while self.current_scene_running:
              # Check for inputs from the player
@@ -187,6 +205,14 @@ class scene_controller:
                     if tk_handler.check_closing():
                         self.current_scene_running = False
                         self.game_running = False
+                elif str(orange_colour_settings_button.click_button(event)).split(" ")[0] == "Character":
+                        self.character_colour = str(orange_colour_settings_button.click_button(event)).split(" ")[1] + "_Pixelated"
+                elif str(yellow_colour_settings_button.click_button(event)).split(" ")[0] == "Character":
+                        self.character_colour = str(yellow_colour_settings_button.click_button(event)).split(" ")[1] + "_Pixelated"
+                elif str(green_colour_settings_button.click_button(event)).split(" ")[0] == "Character":
+                        self.character_colour = str(green_colour_settings_button.click_button(event)).split(" ")[1] + "_Pixelated"
+                elif str(blue_colour_settings_button.click_button(event)).split(" ")[0] == "Character":
+                        self.character_colour = str(blue_colour_settings_button.click_button(event)).split(" ")[1] + "_Pixelated"
                 else:
                     if back_button.click_button(event) != None:
                         self.current_scene = back_button.click_button(event)                  
@@ -195,7 +221,6 @@ class scene_controller:
                     else:
                         self.current_scene_running = False
                         self.change_scene(scene_called_from="Settings")
-                    print(f"Before change {self.current_scene}")
 
                 # Ensures that all devices can run the program at a basic speed of 60fps
                 clock.tick(60)
@@ -208,19 +233,19 @@ class scene_controller:
         self.current_scene_running = True
         self.frame.fill("#3D5A80")
 
-        game_engine_classes.draw_text(frame=self.frame, text="Credits", size=60, x=250, y=50)
-        game_engine_classes.draw_text(frame=self.frame, text="Educational Economic Market - Simulated", size=18, x=250, y=90)
-        game_engine_classes.draw_text(frame=self.frame, text="Our School - QASMT", size=22, x=250, y=145)
-        game_engine_classes.draw_text(frame=self.frame, text="Our Supervising Mentors - Mr Isaac", size=22, x=250, y=195)
-        game_engine_classes.draw_text(frame=self.frame, text="Research Interview -  Mr Altoft", size=22, x=250, y=245)
-        game_engine_classes.draw_text(frame=self.frame, text="Feedback Interview - Mr Fredericksen", size=22, x=250, y=295)
-        game_engine_classes.draw_text(frame=self.frame, text="Image to Pixel Art - Pixelied.com", size=22, x=250, y=345)
-        game_engine_classes.draw_text(frame=self.frame, text="Pixel Art Font - AE Systematic TT (BRK)", size=22, x=250, y=395)
-        game_engine_classes.draw_text(frame=self.frame, text="Icons - Icons8.com", size=22, x=250, y=445)
+        game_engine_classes.draw_text(frame=self.frame, text="Credits", size=90, x=375, y=75)
+        game_engine_classes.draw_text(frame=self.frame, text="Educational Economic Market - Simulated", size=27, x=375, y=135)
+        game_engine_classes.draw_text(frame=self.frame, text="Our School - QASMT", size=33, x=375, y=218)
+        game_engine_classes.draw_text(frame=self.frame, text="Our Supervising Mentors - Mr Isaac", size=33, x=375, y=293)
+        game_engine_classes.draw_text(frame=self.frame, text="Research Interview -  Mr Altoft", size=33, x=375, y=368)
+        game_engine_classes.draw_text(frame=self.frame, text="Feedback Interview - Mr Fredericksen", size=33, x=375, y=442)
+        game_engine_classes.draw_text(frame=self.frame, text="Image to Pixel Art - Pixelied.com", size=33, x=375, y=518)
+        game_engine_classes.draw_text(frame=self.frame, text="Pixel Art Font - AE Systematic TT (BRK)", size=33, x=375, y=593)
+        game_engine_classes.draw_text(frame=self.frame, text="Icons - Icons8.com", size=33, x=375, y=668)
 
         #game_engine_classes.text_button(frame=self.frame, text="<", size=40, x=20, y=20, on_click="Back")
 
-        back_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Back_Button.png", size=(50, 50), x = 50, y=50, on_click="Main_Menu")
+        back_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Back_Button.png", size=(75, 75), x = 75, y=75, on_click="Main_Menu")
 
         while self.current_scene_running:
              # Check for inputs from the player
@@ -237,7 +262,6 @@ class scene_controller:
                     else:
                         self.current_scene_running = False
                         self.change_scene(scene_called_from="Credits")
-                    print(f"Before change {self.current_scene}")
 
                 # Ensures that all devices can run the program at a basic speed of 60fps
                 clock.tick(60)

@@ -63,6 +63,18 @@ class text_button:
                 if self.button_click_rect.collidepoint(mouse_x, mouse_y):
                     return self.on_click
         return None
+    
+class draw_background_image():
+    def __init__(self, frame, image_path):
+        
+        # Load the image in
+        image = py.image.load(image_path)
+
+        # Resize the image
+        resized_image = py.transform.scale(image, (750,750))
+
+        # Put this onto the frame
+        frame.blit(resized_image, (0,0))
 
 class image_button():
     def __init__(
@@ -110,3 +122,109 @@ class image_button():
                     print("button clicked")
                     return self.on_click
         return None
+
+
+class draw_character():
+    def __init__(self, frame, character_folder_path, start_x, start_y):
+
+        self.drive_animation_tracker = 1
+        
+        self.character_folder_path = character_folder_path
+        self.x, self.y = start_x, start_y
+
+        # Load the character image in
+        character_image_path = self.character_folder_path + "/robot_jump.png" 
+        image = py.image.load(character_image_path)
+
+        # Resize the character image
+        resized_image = py.transform.scale(image, (image.get_width()*0.8,image.get_height()*0.8))
+
+        self.character_area_rect = py.Surface(resized_image.get_size()).get_rect()
+        self.character_area_rect.center = (self.x, self.y)
+
+        # Put this onto the frame
+        frame.blit(resized_image, (self.x, self.y))
+
+    def render_character(self, frame, image):
+
+        self.scale = 0.8
+
+        # Resize the character image
+        resized_image = py.transform.scale(image, (image.get_width()*self.scale,image.get_height()*self.scale))
+
+        self.character_area_rect = py.Surface(resized_image.get_size()).get_rect()
+        self.character_area_rect.center = (self.x, self.y)
+
+        # Put this onto the frame
+        frame.blit(resized_image, (self.x, self.y))
+    
+    def update_character(self, frame, key_event):
+        if key_event.key == py.K_s:
+            # Load the character image in
+            character_image_path = self.character_folder_path + "/robot_down.png" 
+            image = py.image.load(character_image_path)
+
+            # Change its coordinates
+            self.y += 5
+
+            # Render the character image
+            self.render_character(frame, image)
+        
+        elif key_event.key == py.K_w:
+            # Load the character image in
+            character_image_path = self.character_folder_path + "/robot_down.png" 
+            image = py.image.load(character_image_path)
+            
+            # Flip the image so the robot faces upwards
+            image = py.transform.flip(image, False, True)
+
+            # Change its coordinates
+            self.y -= 5
+
+            # Render the character image
+            self.render_character(frame, image)
+
+        elif key_event.key == py.K_d:
+            # Load the character image in
+            character_image_path = self.character_folder_path + "/robot_drive" + str(self.animation_tracker + 1) + ".png" 
+            image = py.image.load(character_image_path)
+
+            # Change its coordinates
+            self.x -= 5
+
+            # Render the character image
+            self.render_character(frame, image)
+
+            # loop the animation number for driving
+            self.animation_tracker = (self.animation_tracker + 1) % 2
+
+        elif key_event.key == py.K_a:
+            # Load the character image in
+            character_image_path = self.character_folder_path + "/robot_drive" + str(self.animation_tracker + 1) + ".png" 
+            image = py.image.load(character_image_path)
+
+            # Flip the image so the robot faces to the left
+            image = py.transform.flip(image, True, False)
+
+            # Change its coordinates
+            self.x -= 5
+
+            # Render the character image
+            self.render_character(frame, image)
+
+            # loop the animation number for driving
+            self.animation_tracker = (self.animation_tracker + 1) % 2
+
+        elif key_event.key == py.K_SPACE:
+            # Load the character image in
+            character_image_path = self.character_folder_path + "/robot_jump.png" 
+            image = py.image.load(character_image_path)
+
+            # Render the character image
+            self.render_character(frame, image)
+
+            # loop the animation number for driving
+            self.animation_tracker = (self.animation_tracker + 1) % 2
+
+            
+
