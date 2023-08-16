@@ -1,4 +1,5 @@
 import random as r
+import pandas as pd
 
 total_circulating_money = 100
 
@@ -205,6 +206,18 @@ class Simulation:
         self.financial_sector = Financial_Sector(0.2)
         self.foreign_sector = Foreign_Sector(0.3)
         self.round_number = 0
+        
+        # Initial data for the database keeping tack of each sector's money accounts
+        initial_data = {"Consumers": self.consumer_sector.total_money, "Producers": self.producer_sector.total_money, "Government": self.government_sector.total_money, "Financial": self.financial_sector.total_money}
+
+        # Make the database that everything is being saved to
+        self.money_of_all_sectors_db = pd.DataFrame(initial_data, index=[0])
+
+        # Initial data for the database keeping track of percentage ownership over the total positive circulating amount of money
+        initial_percentage_ownership_data = {"Consumers":25, "Producers":40, "Government":15, "Financial":20}
+
+        # make the database that keeps track of percentage ownership
+        self.percentage_ownership_db = pd.DataFrame(initial_percentage_ownership_data, index=[0])
 
     def calculate_statistics(self):
         pass
@@ -262,10 +275,25 @@ class Simulation:
         self.financial_sector.update_values()
         self.foreign_sector.update_values(self.consumer_sector, self.producer_sector)
 
+        # Update the raw money value database with the round's final values
+        self.money_of_all_sectors_db.loc[len(self.money_of_all_sectors_db)] = [self.consumer_sector.total_money, self.producer_sector.total_money, self.government_sector.total_money, self.financial_sector.total_money]
+
+        # Update the percentage ownership database
+        raw_total_amounts = [self.consumer_sector.total_money, self.producer_sector.total_money, self.government_sector.total_money, self.financial_sector.total_money]
+        current_percentage_ownership_amouts = []
+
+        for raw_total_amount in raw_total_amounts:
+            if raw_total_amount > 0:
+                current_percentage_ownership_amouts.append(raw_total_amount)
+            else:
+                current_percentage_ownership_amouts.append(0)
+
+        self.percentage_ownership_db.loc[len(self.percentage_ownership_db)] = current_percentage_ownership_amouts
+
     def run_multiple_rounds(self, num_rounds):
         for round in range(0, num_rounds):
             self.run_round()
 
 
-circular_flow_of_income_simulation = Simulation()
-circular_flow_of_income_simulation.run_multiple_rounds(50)
+#circular_flow_of_income_simulation = Simulation()
+#circular_flow_of_income_simulation.run_multiple_rounds(50)

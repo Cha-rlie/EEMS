@@ -3,7 +3,13 @@
 # Import necessary libraries
 import pygame as py
 import tkinter_handler
+
+# Import necessary custom libraries
 import game_engine_classes
+import simulation_handler
+
+# Start the simulation
+simulation_handler = simulation_handler.simulation_handler()
 
 # Start a tkinter_handler instance
 tk_handler = tkinter_handler.tk_handler()
@@ -140,11 +146,12 @@ class scene_controller:
             self.teleportation_section = py.Rect(20, 580, 713, 100)
             
             # For the Control Room
-            # graph_section = py.Rect(frame=self.frame, left=)
+            self.lineplot_section = py.Rect(132, 102, 122, 118)
+            self.piechart_section = py.Rect(336, 80, 204, 116)
 
             # For the Teleportation Room
             self.teleportation_command_computer_left = py.Rect(45, 328, 230, 168)
-            self.teleportation_command_computer_right = py.Rect(441, 410, 272, 81)
+            self.teleportation_command_computer_right = py.Rect(472, 330, 230, 168)
             self.teleportation_exit = py.Rect(150, 92, 450, 104)
 
             self.game_started = True
@@ -164,10 +171,16 @@ class scene_controller:
                         self.current_scene_running = False
                         self.game_started = False
                         self.pygame_running = False
+                elif event.type == py.MOUSEBUTTONDOWN:
+                    print(py.mouse.get_pos())
                 elif (event.type == py.KEYDOWN and event.key == py.K_SPACE) or (event.type == py.KEYUP and event.key == py.K_SPACE):
                     if self.character.select_item(self.teleportation_section, event):
                         self.current_scene = "Teleportation_Room"
                         self.change_scene(scene_called_from="Control_Room")
+                    elif self.character.select_item(self.lineplot_section, event):
+                        simulation_handler.history_of_each_sectors_money_lineplot()
+                    elif self.character.select_item(self.piechart_section, event):
+                        simulation_handler.percentage_ownership_of_circulating_money_piechart()
                 else:
                     if main_menu_button.click_button(event) != None:
                         self.game_started = False
@@ -208,13 +221,11 @@ class scene_controller:
                         self.current_scene_running = False
                         self.game_started = False
                         self.pygame_running = False
-                elif event.type == py.MOUSEBUTTONDOWN:
-                    print(py.mouse.get_pos())
                 elif (event.type == py.KEYDOWN and event.key == py.K_SPACE) or (event.type == py.KEYUP and event.key == py.K_SPACE):
                     if self.character.select_item(self.teleportation_command_computer_left, event) or self.character.select_item(self.teleportation_command_computer_right, event):
                         print("It collided with the robot")
                         self.teleportation_destination = tk_handler.teleportation_destination_selection()
-                        if self.teleportation_destination == "Choose a Destination":
+                        if self.teleportation_destination not in ["Control Room", "Corporation Room", "Government Room", "Household Room"]:
                             tk_handler.teleportation_destination_selection_failed()
                             self.teleportation_destination = "Control Room"
                         self.teleportation_destination = self.teleportation_destination.split()[0] + "_" + self.teleportation_destination.split()[1]
@@ -246,13 +257,136 @@ class scene_controller:
                 py.display.flip()
 
     def corporation_room(self):
-        print("The OFFICE!")
+        self.current_scene_running = True
+
+        while self.current_scene_running:
+
+            self.frame.fill("#3D5A80")
+
+            game_engine_classes.draw_background_image(frame=self.frame, image_path="Assets/Game_Rooms/Corporation_Room.png")
+
+            main_menu_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Home_Button.png", size=(55, 55), x = 37, y=37, on_click="Main_Menu")
+
+             # Check for inputs from the player
+            for event in py.event.get():
+                if event.type == py.QUIT:
+                    if tk_handler.check_closing():
+                        self.current_scene_running = False
+                        self.game_started = False
+                        self.pygame_running = False
+                elif (event.type == py.KEYDOWN and event.key == py.K_SPACE) or (event.type == py.KEYUP and event.key == py.K_SPACE):
+                    if self.character.select_item(self.teleportation_section, event):
+                        self.current_scene = "Teleportation_Room"
+                        self.change_scene(scene_called_from="Corporation_Room")
+                else:
+                    if main_menu_button.click_button(event) != None:
+                        self.game_started = False
+                        self.current_scene = main_menu_button.click_button(event)                  
+                    if self.current_scene == None:
+                        self.current_scene = "Corporation_Room"
+                    else:
+                        self.current_scene_running = False
+                        self.change_scene(scene_called_from="Corporation_Room")
+
+                # Use keystroke information to change the character's new image and position
+                self.character.move_character(frame=self.frame, key_state_list=py.key.get_pressed())
+
+                # Draw the character to the screen
+                self.character.draw_character(frame=self.frame)
+
+                # Ensures that all devices can run the program at a basic speed of 60fps
+                clock.tick(40)
+
+                # Update the window
+                py.display.flip()
 
     def government_room(self):
-        print("The GOV'NER!")
+        self.current_scene_running = True
+
+        while self.current_scene_running:
+
+            self.frame.fill("#3D5A80")
+
+            game_engine_classes.draw_background_image(frame=self.frame, image_path="Assets/Game_Rooms/Government_Room.png")
+
+            main_menu_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Home_Button.png", size=(55, 55), x = 37, y=37, on_click="Main_Menu")
+
+             # Check for inputs from the player
+            for event in py.event.get():
+                if event.type == py.QUIT:
+                    if tk_handler.check_closing():
+                        self.current_scene_running = False
+                        self.game_started = False
+                        self.pygame_running = False
+                elif (event.type == py.KEYDOWN and event.key == py.K_SPACE) or (event.type == py.KEYUP and event.key == py.K_SPACE):
+                    if self.character.select_item(self.teleportation_section, event):
+                        self.current_scene = "Teleportation_Room"
+                        self.change_scene(scene_called_from="Government_Room")
+                else:
+                    if main_menu_button.click_button(event) != None:
+                        self.game_started = False
+                        self.current_scene = main_menu_button.click_button(event)                  
+                    if self.current_scene == None:
+                        self.current_scene = "Government_Room"
+                    else:
+                        self.current_scene_running = False
+                        self.change_scene(scene_called_from="Government_Room")
+
+                # Use keystroke information to change the character's new image and position
+                self.character.move_character(frame=self.frame, key_state_list=py.key.get_pressed())
+
+                # Draw the character to the screen
+                self.character.draw_character(frame=self.frame)
+
+                # Ensures that all devices can run the program at a basic speed of 60fps
+                clock.tick(40)
+
+                # Update the window
+                py.display.flip()
 
     def household_room(self):
-        print("The HOUSE!")
+        self.current_scene_running
+
+        while self.current_scene_running:
+
+            self.frame.fill("#3D5A80")
+
+            game_engine_classes.draw_background_image(frame=self.frame, image_path="Assets/Game_Rooms/Household_Room.png")
+
+            main_menu_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Home_Button.png", size=(55, 55), x = 37, y=37, on_click="Main_Menu")
+
+             # Check for inputs from the player
+            for event in py.event.get():
+                if event.type == py.QUIT:
+                    if tk_handler.check_closing():
+                        self.current_scene_running = False
+                        self.game_started = False
+                        self.pygame_running = False
+                elif (event.type == py.KEYDOWN and event.key == py.K_SPACE) or (event.type == py.KEYUP and event.key == py.K_SPACE):
+                    if self.character.select_item(self.teleportation_section, event):
+                        self.current_scene = "Teleportation_Room"
+                        self.change_scene(scene_called_from="Household_Room")
+                else:
+                    if main_menu_button.click_button(event) != None:
+                        self.game_started = False
+                        self.current_scene = main_menu_button.click_button(event)                  
+                    if self.current_scene == None:
+                        self.current_scene = "Household_Room"
+                    else:
+                        self.current_scene_running = False
+                        self.change_scene(scene_called_from="Househole_Room")
+
+                # Use keystroke information to change the character's new image and position
+                self.character.move_character(frame=self.frame, key_state_list=py.key.get_pressed())
+
+                # Draw the character to the screen
+                self.character.draw_character(frame=self.frame)
+
+                # Ensures that all devices can run the program at a basic speed of 60fps
+                clock.tick(40)
+
+                # Update the window
+                py.display.flip()
 
     def about_us_scene(self):
         self.current_scene_running = True
