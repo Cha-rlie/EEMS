@@ -207,6 +207,8 @@ class Simulation:
         self.foreign_sector = Foreign_Sector(0.3)
         self.round_number = 0
         
+        self.total_positive_circulating_amount = 100
+
         # Initial data for the database keeping tack of each sector's money accounts
         initial_data = {"Consumers": self.consumer_sector.total_money, "Producers": self.producer_sector.total_money, "Government": self.government_sector.total_money, "Financial": self.financial_sector.total_money}
 
@@ -285,6 +287,7 @@ class Simulation:
         for raw_total_amount in raw_total_amounts:
             if raw_total_amount > 0:
                 current_percentage_ownership_amouts.append(raw_total_amount)
+                self.total_positive_circulating_amount += raw_total_amount
             else:
                 current_percentage_ownership_amouts.append(0)
 

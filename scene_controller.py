@@ -154,6 +154,16 @@ class scene_controller:
             self.teleportation_command_computer_right = py.Rect(472, 330, 230, 168)
             self.teleportation_exit = py.Rect(150, 92, 450, 104)
 
+            # For the Corporation Room
+            self.corporation_command_computer_left = py.Rect(29, 104, 289, 178)
+            self.corporation_command_computer_right = py.Rect(442, 164, 274, 184)
+
+            # For the Government Room
+            self.goverment_command_board = py.Rect(78, 56, 596, 98)
+
+            # For the Household Room
+            self.household_room_command_computer = py.Rect(278, 100, 198, 160)
+
             self.game_started = True
 
         while self.current_scene_running:
@@ -161,6 +171,8 @@ class scene_controller:
             self.frame.fill("#3D5A80")
 
             game_engine_classes.draw_background_image(frame=self.frame, image_path="Assets/Game_Rooms/Control_Room.png")
+
+            #game_engine_classes.draw_text(frame=self.frame, text="Central Control Room", size=60, x=375, y=40)
 
             main_menu_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Home_Button.png", size=(55, 55), x = 37, y=37, on_click="Main_Menu")
 
@@ -171,8 +183,6 @@ class scene_controller:
                         self.current_scene_running = False
                         self.game_started = False
                         self.pygame_running = False
-                elif event.type == py.MOUSEBUTTONDOWN:
-                    print(py.mouse.get_pos())
                 elif (event.type == py.KEYDOWN and event.key == py.K_SPACE) or (event.type == py.KEYUP and event.key == py.K_SPACE):
                     if self.character.select_item(self.teleportation_section, event):
                         self.current_scene = "Teleportation_Room"
@@ -212,6 +222,8 @@ class scene_controller:
 
             game_engine_classes.draw_background_image(frame=self.frame, image_path="Assets/Game_Rooms/Teleportation_Room.png")
 
+            game_engine_classes.draw_text(frame=self.frame, text="Teleportation Room", size=60, x=375, y=25, colour="#243e61")
+
             main_menu_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Home_Button.png", size=(55, 55), x = 37, y=37, on_click="Main_Menu")
 
              # Check for inputs from the player
@@ -223,15 +235,12 @@ class scene_controller:
                         self.pygame_running = False
                 elif (event.type == py.KEYDOWN and event.key == py.K_SPACE) or (event.type == py.KEYUP and event.key == py.K_SPACE):
                     if self.character.select_item(self.teleportation_command_computer_left, event) or self.character.select_item(self.teleportation_command_computer_right, event):
-                        print("It collided with the robot")
                         self.teleportation_destination = tk_handler.teleportation_destination_selection()
                         if self.teleportation_destination not in ["Control Room", "Corporation Room", "Government Room", "Household Room"]:
                             tk_handler.teleportation_destination_selection_failed()
                             self.teleportation_destination = "Control Room"
                         self.teleportation_destination = self.teleportation_destination.split()[0] + "_" + self.teleportation_destination.split()[1]
-                        print(self.teleportation_destination)
                     elif self.character.select_item(self.teleportation_exit, event):
-                        print("collided with exit" + self.teleportation_destination)
                         self.current_scene = self.teleportation_destination
                         self.change_scene(scene_called_from="Teleportation_Room")
                 else:
@@ -265,6 +274,8 @@ class scene_controller:
 
             game_engine_classes.draw_background_image(frame=self.frame, image_path="Assets/Game_Rooms/Corporation_Room.png")
 
+            game_engine_classes.draw_text(frame=self.frame, text="Corporation Room", size=60, x=375, y=35, colour="#243e61")
+
             main_menu_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Home_Button.png", size=(55, 55), x = 37, y=37, on_click="Main_Menu")
 
              # Check for inputs from the player
@@ -273,11 +284,14 @@ class scene_controller:
                     if tk_handler.check_closing():
                         self.current_scene_running = False
                         self.game_started = False
-                        self.pygame_running = False
+                        self.pygame_simulationning = False
                 elif (event.type == py.KEYDOWN and event.key == py.K_SPACE) or (event.type == py.KEYUP and event.key == py.K_SPACE):
                     if self.character.select_item(self.teleportation_section, event):
                         self.current_scene = "Teleportation_Room"
                         self.change_scene(scene_called_from="Corporation_Room")
+                    elif self.character.select_item(self.corporation_command_computer_left, event) or self.character.select_item(self.corporation_command_computer_right, event):
+                        new_corporation_values = tk_handler.corporations_command_centre([simulation_handler.simulation.producer_sector.hiring_attitude, simulation_handler.simulation.producer_sector.salary, simulation_handler.simulation.producer_sector.trading_attitude], simulation_handler.simulation.producer_sector.total_money, simulation_handler.simulation.total_positive_circulating_amount)
+                        simulation_handler.simulation.producer_sector.hiring_attitude, simulation_handler.simulation.producer_sector.salary, simulation_handler.simulation.producer_sector.trading_attitude = new_corporation_values
                 else:
                     if main_menu_button.click_button(event) != None:
                         self.game_started = False
@@ -309,6 +323,8 @@ class scene_controller:
 
             game_engine_classes.draw_background_image(frame=self.frame, image_path="Assets/Game_Rooms/Government_Room.png")
 
+            game_engine_classes.draw_text(frame=self.frame, text="Government Room", size=60, x=375, y=18, colour="#243e61")
+
             main_menu_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Home_Button.png", size=(55, 55), x = 37, y=37, on_click="Main_Menu")
 
              # Check for inputs from the player
@@ -322,6 +338,9 @@ class scene_controller:
                     if self.character.select_item(self.teleportation_section, event):
                         self.current_scene = "Teleportation_Room"
                         self.change_scene(scene_called_from="Government_Room")
+                    elif self.character.select_item(self.goverment_command_board, event):
+                        new_government_values = tk_handler.government_control_centre([simulation_handler.simulation.government_sector.printing_rate, simulation_handler.simulation.government_sector.government_spending_rate, simulation_handler.simulation.government_sector.tax_rate], simulation_handler.simulation.government_sector.total_money, simulation_handler.simulation.total_positive_circulating_amount)
+                        simulation_handler.simulation.government_sector.printing_rate, simulation_handler.simulation.government_sector.government_spending_rate, simulation_handler.simulation.government_sector.tax_rate = new_government_values
                 else:
                     if main_menu_button.click_button(event) != None:
                         self.game_started = False
@@ -345,13 +364,15 @@ class scene_controller:
                 py.display.flip()
 
     def household_room(self):
-        self.current_scene_running
+        self.current_scene_running = True
 
         while self.current_scene_running:
 
             self.frame.fill("#3D5A80")
 
             game_engine_classes.draw_background_image(frame=self.frame, image_path="Assets/Game_Rooms/Household_Room.png")
+
+            game_engine_classes.draw_text(frame=self.frame, text="Household Room", size=60, x=375, y=35, colour="#243e61")
 
             main_menu_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Home_Button.png", size=(55, 55), x = 37, y=37, on_click="Main_Menu")
 
@@ -366,6 +387,9 @@ class scene_controller:
                     if self.character.select_item(self.teleportation_section, event):
                         self.current_scene = "Teleportation_Room"
                         self.change_scene(scene_called_from="Household_Room")
+                    elif self.character.select_item(self.household_room_command_computer, event):
+                        new_government_values = tk_handler.household_control_centre([simulation_handler.simulation.consumer_sector.buying_attitude, simulation_handler.simulation.consumer_sector.working_attitude, simulation_handler.simulation.consumer_sector.saving_rate, simulation_handler.simulation.consumer_sector.trading_attitude], simulation_handler.simulation.consumer_sector.total_money, simulation_handler.simulation.total_positive_circulating_amount)
+                        simulation_handler.simulation.consumer_sector.buying_attitude, simulation_handler.simulation.consumer_sector.working_attitude, simulation_handler.simulation.consumer_sector.saving_rate, simulation_handler.simulation.consumer_sector.trading_attitude = new_government_values
                 else:
                     if main_menu_button.click_button(event) != None:
                         self.game_started = False
@@ -374,7 +398,7 @@ class scene_controller:
                         self.current_scene = "Household_Room"
                     else:
                         self.current_scene_running = False
-                        self.change_scene(scene_called_from="Househole_Room")
+                        self.change_scene(scene_called_from="Household_Room")
 
                 # Use keystroke information to change the character's new image and position
                 self.character.move_character(frame=self.frame, key_state_list=py.key.get_pressed())
