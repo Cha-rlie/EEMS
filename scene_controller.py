@@ -19,7 +19,9 @@ class scene_controller:
         self.character_colour = "Orange_Pixelated"
 
         # Variable that main.py referneces to know when to stop the game
-        self.game_running = True
+        self.pygame_running = True
+
+        self.game_started = False
 
         # Variable to keep track of the current scene that is being displayed
         self.current_scene = "Main_Menu"
@@ -87,7 +89,7 @@ class scene_controller:
                 if event.type == py.QUIT:
                     if tk_handler.check_closing():
                         self.current_scene_running = False
-                        self.game_running = False
+                        self.pygame_running = False
                 else:
                     if play_game_button.click_button(event) != None:
                         self.current_scene = play_game_button.click_button(event)
@@ -115,24 +117,37 @@ class scene_controller:
     
     def control_room(self):
         self.current_scene_running = True
-        self.frame.fill("#3D5A80")
 
-        game_engine_classes.draw_background_image(frame=self.frame, image_path="Assets/Game_Rooms/Control_Room.png")
+        if not self.game_started:
+            character_path = "Assets/Character/kenney_robot-pack/PNG/" + self.character_colour
+            self.character = game_engine_classes.character(frame=self.frame, character_folder_path=character_path, start_x=375, start_y=525)
 
-        main_menu_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Home_Button.png", size=(55, 55), x = 37, y=37, on_click="Main_Menu")
+            teleportation_section = py.Rect(20, 640, 713, 100)
+            # graph_section = py.Rect(frame=self.frame, left=)
 
-        character_path = "Assets/Character/kenney_robot-pack/PNG/" + self.character_colour
-        character = game_engine_classes.draw_character(frame=self.frame, character_folder_path=character_path, start_x=375, start_y=525)
+            self.game_started = True
 
         while self.current_scene_running:
+
+            self.frame.fill("#3D5A80")
+
+            game_engine_classes.draw_background_image(frame=self.frame, image_path="Assets/Game_Rooms/Control_Room.png")
+
+            main_menu_button = game_engine_classes.image_button(frame=self.frame, image_path="Assets/Icons/Pixel_Home_Button.png", size=(55, 55), x = 37, y=37, on_click="Main_Menu")
+
              # Check for inputs from the player
             for event in py.event.get():
                 if event.type == py.QUIT:
                     if tk_handler.check_closing():
                         self.current_scene_running = False
-                        self.game_running = False
+                        self.game_started = False
+                        self.pygame_running = False
+                elif event.type == py.KEYDOWN and event.key == py.K_SPACE:
+                    # Code for teleportation
+                    pass
                 else:
                     if main_menu_button.click_button(event) != None:
+                        self.game_started = False
                         self.current_scene = main_menu_button.click_button(event)                  
                     if self.current_scene == None:
                         self.current_scene = "Control_Room"
@@ -140,12 +155,17 @@ class scene_controller:
                         self.current_scene_running = False
                         self.change_scene(scene_called_from="Control_Room")
 
+                # Use keystroke information to change the character's new image and position
+                self.character.move_character(frame=self.frame, key_state_list=py.key.get_pressed())
+
+                # Draw the character to the screen
+                self.character.draw_character(frame=self.frame)
+
                 # Ensures that all devices can run the program at a basic speed of 60fps
-                clock.tick(60)
+                clock.tick(40)
 
                 # Update the window
                 py.display.flip()
-            py.display.flip()
     
     def about_us_scene(self):
         self.current_scene_running = True
@@ -167,7 +187,7 @@ class scene_controller:
                 if event.type == py.QUIT:
                     if tk_handler.check_closing():
                         self.current_scene_running = False
-                        self.game_running = False
+                        self.pygame_running = False
                 else:
                     if back_button.click_button(event) != None:
                         self.current_scene = back_button.click_button(event)                  
@@ -182,7 +202,6 @@ class scene_controller:
 
                 # Update the window
                 py.display.flip()
-            py.display.flip()
 
     def settings(self):
         self.current_scene_running = True
@@ -204,7 +223,7 @@ class scene_controller:
                 if event.type == py.QUIT:
                     if tk_handler.check_closing():
                         self.current_scene_running = False
-                        self.game_running = False
+                        self.pygame_running = False
                 elif str(orange_colour_settings_button.click_button(event)).split(" ")[0] == "Character":
                         self.character_colour = str(orange_colour_settings_button.click_button(event)).split(" ")[1] + "_Pixelated"
                 elif str(yellow_colour_settings_button.click_button(event)).split(" ")[0] == "Character":
@@ -253,7 +272,7 @@ class scene_controller:
                 if event.type == py.QUIT:
                     if tk_handler.check_closing():
                         self.current_scene_running = False
-                        self.game_running = False
+                        self.pygame_running = False
                 else:
                     if back_button.click_button(event) != None:
                         self.current_scene = back_button.click_button(event)                  

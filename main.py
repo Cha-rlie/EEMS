@@ -14,7 +14,7 @@ py.init()
 # Start a scene_controller instance
 scene_controller = scene_controller.scene_controller()
 
-while scene_controller.game_running:
+while scene_controller.pygame_running:
 
     scene_controller.change_scene()
 

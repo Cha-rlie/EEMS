@@ -124,7 +124,7 @@ class image_button():
         return None
 
 
-class draw_character():
+class character():
     def __init__(self, frame, character_folder_path, start_x, start_y):
 
         self.drive_animation_tracker = 1
@@ -145,21 +145,29 @@ class draw_character():
         # Put this onto the frame
         frame.blit(resized_image, (self.x, self.y))
 
-    def render_character(self, frame, image):
+        # Save the created image as the last image
+        self.image_to_render = image
 
+    def draw_character(self, frame):
+
+        # Set the scale that the image will be multiplied by
         self.scale = 0.8
 
         # Resize the character image
-        resized_image = py.transform.scale(image, (image.get_width()*self.scale,image.get_height()*self.scale))
+        resized_image_to_render = py.transform.scale(self.image_to_render, (self.image_to_render.get_width()*self.scale,self.image_to_render.get_height()*self.scale))
 
-        self.character_area_rect = py.Surface(resized_image.get_size()).get_rect()
+        self.character_area_rect = py.Surface(resized_image_to_render.get_size()).get_rect()
         self.character_area_rect.center = (self.x, self.y)
 
         # Put this onto the frame
-        frame.blit(resized_image, (self.x, self.y))
+        frame.blit(resized_image_to_render, (self.x, self.y))
+
+        # Save the last image if it is different
+        if self.image_to_render != self.image_to_render:
+            self.image_to_render = self.image_to_render
     
-    def update_character(self, frame, key_event):
-        if key_event.key == py.K_s:
+    def move_character(self, frame, key_state_list):
+        if key_state_list[py.K_s] or key_state_list[py.K_DOWN]:
             # Load the character image in
             character_image_path = self.character_folder_path + "/robot_down.png" 
             image = py.image.load(character_image_path)
@@ -167,10 +175,10 @@ class draw_character():
             # Change its coordinates
             self.y += 5
 
-            # Render the character image
-            self.render_character(frame, image)
+            # Set the chosen image as the image to be displayed
+            self.image_to_render = image
         
-        elif key_event.key == py.K_w:
+        elif key_state_list[py.K_w] or key_state_list[py.K_UP]:
             # Load the character image in
             character_image_path = self.character_folder_path + "/robot_down.png" 
             image = py.image.load(character_image_path)
@@ -181,26 +189,26 @@ class draw_character():
             # Change its coordinates
             self.y -= 5
 
-            # Render the character image
-            self.render_character(frame, image)
+            # Set the chosen image as the image to be displayed
+            self.image_to_render = image
 
-        elif key_event.key == py.K_d:
+        elif key_state_list[py.K_d] or key_state_list[py.K_RIGHT]:
             # Load the character image in
-            character_image_path = self.character_folder_path + "/robot_drive" + str(self.animation_tracker + 1) + ".png" 
+            character_image_path = self.character_folder_path + "/robot_drive" + str(self.drive_animation_tracker + 1) + ".png" 
             image = py.image.load(character_image_path)
 
             # Change its coordinates
-            self.x -= 5
+            self.x += 5
 
-            # Render the character image
-            self.render_character(frame, image)
+            # Set the chosen image as the image to be displayed
+            self.image_to_render = image
 
             # loop the animation number for driving
-            self.animation_tracker = (self.animation_tracker + 1) % 2
+            self.drive_animation_tracker = (self.drive_animation_tracker + 1) % 2
 
-        elif key_event.key == py.K_a:
+        elif key_state_list[py.K_a] or key_state_list[py.K_LEFT]:
             # Load the character image in
-            character_image_path = self.character_folder_path + "/robot_drive" + str(self.animation_tracker + 1) + ".png" 
+            character_image_path = self.character_folder_path + "/robot_drive" + str(self.drive_animation_tracker + 1) + ".png" 
             image = py.image.load(character_image_path)
 
             # Flip the image so the robot faces to the left
@@ -209,22 +217,27 @@ class draw_character():
             # Change its coordinates
             self.x -= 5
 
-            # Render the character image
-            self.render_character(frame, image)
+            # Set the chosen image as the image to be displayed
+            self.image_to_render = image
 
             # loop the animation number for driving
-            self.animation_tracker = (self.animation_tracker + 1) % 2
+            self.drive_animation_tracker = (self.drive_animation_tracker + 1) % 2
+    
+    def select_item(self, frame, item, key_event):
+        if key_event.type == py.KEYDOWN:
+            if key_event.key == py.K_SPACE:
+                # Load the character image in
+                character_image_path = self.character_folder_path + "/robot_jump.png" 
+                image = py.image.load(character_image_path)
 
-        elif key_event.key == py.K_SPACE:
-            # Load the character image in
-            character_image_path = self.character_folder_path + "/robot_jump.png" 
-            image = py.image.load(character_image_path)
+                # Set the chosen image as the image to be displayed
+                self.image_to_render = image
 
-            # Render the character image
-            self.render_character(frame, image)
+        elif key_event.type == py.KEYUP:
+            if key_event.key == py.K_SPACE:
+                # Load the character image in
+                character_image_path = self.character_folder_path + "/robot_drive1.png" 
+                image = py.image.load(character_image_path)
 
-            # loop the animation number for driving
-            self.animation_tracker = (self.animation_tracker + 1) % 2
-
-            
-
+                # Set the chosen image as the image to be displayed
+                self.image_to_render = image
