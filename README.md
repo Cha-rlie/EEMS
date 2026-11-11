@@ -7,3 +7,5 @@ Educational Economic Market – Simulated, also known as "EEMS", is a very diffe
 - Animated movement
 - Cute robot avatar
 - Beautiful custom art background (absolutely all credit for the artwork goes to my awesome teammate, Carlos! (on top of everything else he did)
+## More information
+https://i3awards.org.au/pastprojects/project/tbdzl/
